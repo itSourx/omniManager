@@ -229,7 +229,7 @@ export class UsersService {
     async findAll(): Promise<any[]> {
     try {
         const records = await this.base('Users').select({
-        fields: ['ID', 'ref', 'NI_Number', 'email', 'Name', 'Adress', 'Phone', 'Profile', 'Entity', 'Photo', 'Birth', 'Title', 'Sex', 'PayStatus', 'ref', 'GrossSalary', 'MonthlySalary', 'HoursRate', 'Enter', 'Departure','TaxCode', 'SortCode', 'BankName', 'AccountNumber', 'AccountName', 'Allowance', 'MonthlyAllowance'], // Ne récupérer que les champs pertinents
+        fields: ['ID', 'ref', 'NI_Number', 'email', 'Name', 'Adress', 'Phone', 'Profile','Department', 'Entity', 'Photo', 'Birth', 'Title', 'Sex', 'PayStatus', 'ref', 'GrossSalary', 'MonthlySalary', 'HoursRate', 'Enter', 'Departure','TaxCode', 'SortCode', 'BankName', 'AccountNumber', 'AccountName', 'Allowance', 'MonthlyAllowance', 'Status'], // Ne récupérer que les champs pertinents
         maxRecords: 100, // Limite à 100 enregistrements
         pageSize: 100,   // Facultatif : page de 100
         }).all();
