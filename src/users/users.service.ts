@@ -252,19 +252,17 @@ export class UsersService {
       if (data.ifu && typeof data.ifu === 'string') {
         data.ifu = parseInt(data.ifu); // Conversion en nombre
       }
-      if (data.compteOwo && typeof data.compteOwo === 'string') {
-        data.compteOwo = parseInt(data.compteOwo); // Conversion en nombre
-      }
+      
       // Si profileType est fourni, récupérez l'ID du profil correspondant
       if (data.profileType) {
-        const profile = await this.roleService.findOneByType(data.profileType);
+        const profile = await this.roleService.findOne(data.profileType);
   
         if (!profile) {
-          throw new Error(`Le type de profil "${data.profileType}" n'existe pas.`);
+          throw new Error(`Le de profil "${data.profileType}" n'existe pas.`);
         }
   
         // Formatez le champ "profile" comme un tableau d'IDs
-        data.profile = [profile.id];
+        data.Role = [profile.id];
         delete data.profileType; // Supprimez profileType car il n'est pas stocké directement
       }
     // Gestion des images locales
@@ -303,10 +301,25 @@ export class UsersService {
         const response = await this.base('Users').update(id, data);
       
       console.error('Données de mise à jour de l’utilisateur :', data);
-      return response.data;
+      
+      //return response.fields;
+      const allowedFields = [
+      'ID', 'ref', 'NI_Number', 'email', 'Name', 'Adress', 'Phone', 'Profile', 'Department', 'Entity',
+      'Photo', 'Birth', 'Title', 'Sex', 'PayStatus', 'GrossSalary', 'MonthlySalary', 'HoursRate',
+      'Enter', 'Departure', 'TaxCode', 'SortCode', 'BankName', 'AccountNumber', 'AccountName',
+      'Allowance', 'MonthlyAllowance', 'Status'
+    ];
+
+    // Ne retourner que les champs autorisés
+    const filteredFields = Object.fromEntries(
+      Object.entries(response.fields).filter(([key]) => allowedFields.includes(key))
+    );
+
+    return filteredFields;
+
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l’utilisateur :', error);
-      throw new Error('Impossible de mettre à jour l’utilisateur.');
+      throw error;
     }
   }
 

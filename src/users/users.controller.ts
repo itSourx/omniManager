@@ -18,14 +18,13 @@ export class UsersController {
     async getAllUsers() {
       return this.usersService.findAll();
     }
-
     // Nouvelle route pour rechercher un utilisateur  par email
     @Get('getUserByEmail/:email')
     async findOneByEmail(@Param('email') email: string): Promise<any> {
-        return this.usersService.findOneByEmail(email);
+      return this.usersService.findOneByEmail(email);
     }
     // Nouvelle route pour rechercher un utilisateur  par id
-    @Get('getUserById/:id')
+    @Get(':id')
     async getUserById(@Param('id') id: string): Promise<any> {
         return this.usersService.getUserById(id);
     }

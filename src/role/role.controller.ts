@@ -11,9 +11,14 @@ export class RoleController {
 
   // Endpoint pour récupérer tous les profils par type
   @Get('getByType/:type')
-  async findAllByType(@Param('type') type: string): Promise<any[]> {
-    return this.roleService.findOneByType(type);
+  async getByType(@Param('type') type: string): Promise<any> {
+    const result = await this.roleService.findOneByType(type);
+    if (!result) {
+      return { message: `Aucun rôle trouvé pour type '${type}'` }; // ou throw 404
+    }
+    return result;
   }
+
 
   @Get(':id')
   async findOne(@Param('id') id: string) {

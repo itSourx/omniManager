@@ -61,8 +61,10 @@ export class RoleService {
       throw new Error(`Erreur lors de la suppression du role : ${error.message}`);
     }
   }
-    async findOneByType(type: string): Promise<any | null> {
+    /*async findOneByType(type: string): Promise<any | null> {
       try {
+        console.log("🔍 Recherche du rôle avec type :", type);
+
         const response = await this.base('Role')
         .select({ filterByFormula: `{Role} = '${type}'` })
         .firstPage();
@@ -74,7 +76,8 @@ export class RoleService {
       if (Array.isArray(role.fields.Role)) {
           role.fields.Role = role.fields.Role[0]; // Prenez le premier élément du tableau
         }
-    
+        console.log("Résultat de la recherche :", role.fields);
+
           return role.fields;
         }
     
@@ -83,5 +86,39 @@ export class RoleService {
         console.error('Erreur lors de la recherche du profil :', error);
         return null;
       }
+    }*/
+
+  async findOneByType(type: string): Promise<any | null> {
+  try {
+    console.log("🔍 Recherche du rôle avec type :", type);
+
+    // Échapper les apostrophes simples pour éviter les erreurs Airtable
+    const safeType = type.replace(/'/g, "\\'");
+
+    const response = await this.base('Role')
+      .select({ filterByFormula: `{type} = '${safeType}'` })
+      .firstPage();
+
+    console.log("📦 Réponse Airtable :", response);
+
+    if (response.length > 0) {
+      const role = response[0];
+
+      // Normaliser le champ Role s’il est un tableau
+      if (Array.isArray(role.fields.Role)) {
+        role.fields.Role = role.fields.Role[0];
+      }
+
+      // Retourner les fields avec l'ID Airtable
+      return { id: role.id, ...role.fields };
     }
+
+    // Aucun résultat trouvé
+    return null;
+  } catch (error) {
+    console.error('❌ Erreur lors de la recherche du rôle :', error);
+    return null;
+  }
+}
+
 }
